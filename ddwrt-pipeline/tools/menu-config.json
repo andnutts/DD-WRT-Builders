@@ -1,0 +1,43 @@
+{
+  "Options": [
+    {
+      "name": "Gather Host Information",
+      "command": "../build-helper.sh info",
+      "description": "Display host environment (WSL/Linux) OS, CPU, Memory, and Disk information."
+    },
+    {
+      "name": "Update DD-WRT Source",
+      "command": "../build-helper.sh update_source",
+      "description": "Update DD-WRT source code using svn update."
+    },
+    {
+      "name": "Clean Build Directory",
+      "command": "rm -rf ../ddwrt_source/build/*",
+      "description": "Remove temporary build files to force a clean compilation."
+    }
+  ],
+  "Build": [
+    {
+      "name": "Target: broadcom-4700 (Build)",
+      "command": "../build-helper.sh build broadcom-4700",
+      "description": "Build firmware for Broadcom based routers (e.g., WRT54G series)."
+    },
+    {
+      "name": "Target: ath79 (MIPS) (Build)",
+      "command": "../build-helper.sh build ath79",
+      "description": "Build firmware for Atheros-based MIPS routers."
+    }
+  ],
+  "Hardware": [
+    {
+      "name": "Target: broadcom-4700 (Hardware Info)",
+      "command": "../build-helper.sh hardware_info broadcom-4700",
+      "description": "Display known hardware specs for Broadcom 4700 targets."
+    },
+    {
+      "name": "Target: ath79 (MIPS) (Hardware Info)",
+      "command": "../build-helper.sh hardware_info ath79",
+      "description": "Display known hardware specs for Atheros/MIPS targets."
+    }
+  ]
+}
