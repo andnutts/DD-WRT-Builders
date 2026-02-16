@@ -169,7 +169,6 @@ function Private:Format-StatusList {
     }
     Write-Host ""
 }
-
 #endregion
 #==================================================================#
 #region * Template Content Variables *
@@ -549,7 +548,6 @@ model=TEST_MODEL
 }
 '@
 #endregion
-
 #endregion
 #==================================================================#
 #region * Project Structure Definition and File Content *
@@ -2086,7 +2084,6 @@ Utilities used across pipeline: string-extract helpers, binwalk wrappers, format
     }
     #endregion
 }
-
 #endregion
 #==================================================================#
 #region * Execution *

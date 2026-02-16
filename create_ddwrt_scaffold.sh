@@ -10,16 +10,12 @@ ROOT_PATH=$1
 if [ -z "$ROOT_PATH" ]; then
     echo "--- DD-WRT Scaffold Setup ---"
     read -r -p "Enter the directory name for the scaffold (e.g., ddwrt-pipeline): " ROOT_PATH
-    
-    # If the user enters nothing, default to 'ddwrt-pipeline'
     if [ -z "$ROOT_PATH" ]; then
         ROOT_PATH="ddwrt-pipeline"
         echo "No path entered. Defaulting to '$ROOT_PATH'."
     fi
 fi
 # -----------------------------------
-
-# Confirmation prompt
 read -r -p "Create DD-WRT pipeline scaffold in '$ROOT_PATH'? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
     echo "Creating scaffold..."
@@ -28,12 +24,10 @@ else
     exit 0
 fi
 
-# 1. Create Directories
 echo "Creating directories..."
 mkdir -p "$ROOT_PATH/parse/tests"
 mkdir -p "$ROOT_PATH/tools"
 
-# 2. Create README.md
 echo "Creating README.md..."
 cat << 'EOF_README' > "$ROOT_PATH/README.md"
 # DD-WRT Build Pipeline Scaffold
@@ -58,7 +52,6 @@ This project scaffold was created to manage custom DD-WRT firmware builds within
 The necessary shell scripts (`.sh` files) have been made executable.
 EOF_README
 
-# 3. Create build-helper.sh (Core Build Logic)
 echo "Creating build-helper.sh..."
 cat << 'EOF_HELPER' > "$ROOT_PATH/build-helper.sh"
 #!/bin/bash
@@ -71,9 +64,7 @@ DDWRT_SOURCE_DIR="ddwrt_source"
 PATCHES_DIR="parse/patches"
 # Read the target from the command line argument if passed from menu.sh
 BUILD_TARGET=${1:-"broadcom"}
-
 # --- Functions ---
-
 clone_source() {
     echo "Cloning DD-WRT source..."
     if [ ! -d "$DDWRT_SOURCE_DIR" ]; then
@@ -97,13 +88,10 @@ apply_patches() {
 configure_and_build() {
     echo "Configuring and building firmware for target: $BUILD_TARGET..."
     # cd $DDWRT_SOURCE_DIR
-
     # 1. Apply default config
     # make ${BUILD_TARGET}_config
-
     # 2. Start the build
     # make -j$(nproc)
-
     echo "Placeholder: Build process skipped. Add your make commands here."
 }
 
@@ -114,13 +102,11 @@ main() {
     configure_and_build
     echo "Build process completed (placeholders executed). Edit build-helper.sh for real action."
 }
-
 # --- Execution ---
 main
 EOF_HELPER
 chmod +x "$ROOT_PATH/build-helper.sh"
 
-# 4. Create tools/menu-config.json
 echo "Creating tools/menu-config.json..."
 cat << 'EOF_JSON' > "$ROOT_PATH/tools/menu-config.json"
 {

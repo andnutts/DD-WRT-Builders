@@ -5,7 +5,6 @@ IFS=$'\n\t'
 
 PROGNAME="$(basename "$0")"
 VERSION="1.0.0"
-
 # ----------------------
 # Default parameters
 # ----------------------
@@ -17,7 +16,6 @@ MAPPINGS_FILE="$PWD/mappings/ddwrt-mappings.json"
 DRY_RUN=0
 FORCE=0
 VERBOSE=0
-
 # ----------------------
 # Logging and helpers
 # ----------------------
@@ -84,7 +82,6 @@ ensure_git_clone() {
   log "Cloned repo at commit $commit" "INFO"
   echo "$commit"
 }
-
 # ----------------------
 # Binary/string extraction
 # ----------------------
@@ -117,7 +114,6 @@ PY
   # last fallback: hexdump printable ascii (best effort)
   hexdump -v -e '1/1 "%c"' "$file" | sed 's/[^[:print:]]/ /g' | tr -s ' ' | sed -n '1,1000p'
 }
-
 # ----------------------
 # Parsers
 # ----------------------
@@ -160,7 +156,6 @@ parse_nvram_strings() {
     fi
   done <<<"$strings"
 }
-
 # ----------------------
 # Filesystem/tree matching and scoring
 # ----------------------
@@ -205,7 +200,6 @@ score_with_mappings() {
     return
   fi
 }
-
 # ----------------------
 # Small interactive prompt helper
 # ----------------------
@@ -220,7 +214,6 @@ prompt_edit_field() {
     printf "%s" "$input"
   fi
 }
-
 # ----------------------
 # Argument parsing (getopt)
 # ----------------------
@@ -240,7 +233,6 @@ Options:
 USAGE
 }
 
-# use getopt for long options
 PARSED=$(getopt -o h --long repo-url:,workdir:,bootlog:,nvram:,mappings:,dry-run,force,verbose,help -n "$PROGNAME" -- "$@") || { print_usage; exit 2; }
 eval set -- "$PARSED"
 while true; do
@@ -260,7 +252,6 @@ while true; do
 done
 
 [[ -n "$BOOTLOG" ]] || { print_usage; die "Missing required --bootlog"; }
-
 # ----------------------
 # Main flow (example orchestration)
 # ----------------------
@@ -269,14 +260,10 @@ main() {
   log "Boot log: $BOOTLOG" "DEBUG"
   commit="$(ensure_git_clone "$REPO_URL" "$WORK_DIR")"
   log "Repo commit: $commit" "DEBUG"
-
   log "Reading boot log" "INFO"
   BOOT_RAW="$(safe_readfile "$BOOTLOG")"
-
   log "Parsing boot log" "DEBUG"
   parse_bootlog "$BOOT_RAW" > /tmp/ddwrt_boot_parsed.txt || true
-
-  # Extract strings from NVRAM files
   declare -a NV_STRINGS=()
   for f in "${NVRAM_FILES[@]}"; do
     if [[ -f "$f" ]]; then
@@ -286,33 +273,23 @@ main() {
       log "NVRAM file not found: $f" "DEBUG"
     fi
   done
-
-  # Load mappings
   mappings_json="$(load_mappings "$MAPPINGS_FILE")"
-
-  # Build search string list (boot parsed values + nvram contents)
   declare -a SEARCH_STRINGS=()
-  # include lines from parsed boot that look useful
   mapfile -t parsed_lines < <(awk -F: '/^(Model|Machine|Board|Soc|MAC|Cmdline|Flash):/ { print $2 }' /tmp/ddwrt_boot_parsed.txt | sed 's/^[[:space:]]*//')
   for pl in "${parsed_lines[@]}"; do
     SEARCH_STRINGS+=("$pl")
   done
   for s in "${NV_STRINGS[@]}"; do
-    # add first 200 lines of each nvram string as candidates
     mapfile -t parts < <(printf '%s\n' "$s" | sed -n '1,200p')
     for p in "${parts[@]}"; do SEARCH_STRINGS+=("$p"; done
   done
-
   log "Scoring with mappings (top results):" "INFO"
   if [[ "${mappings_json:-}" != "[]" ]]; then
     score_with_mappings "$mappings_json" "${SEARCH_STRINGS[@]}" | head -n 20 || true
   else
     log "No mappings loaded" "INFO"
   fi
-
-  # Example of trying to find candidates in repo tree
   log "Trying to match candidate names in tree (sample)" "DEBUG"
-  # Use first few parsed lines as candidates
   mapfile -t candidates < <(printf '%s\n' "${parsed_lines[@]}" | sed -n '1,10p')
   for c in "${candidates[@]}"; do
     try_match_intree "$WORK_DIR" "$c" || true

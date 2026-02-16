@@ -157,7 +157,6 @@ $MenuOptions = @(
                       Action  = { return 'quit' } }
 )
 #endregion
-
 # ---------- Main interactive flow ----------
 Clear-Host
 Assert-Admin
@@ -197,32 +196,3 @@ switch ($choice) {
     '4' { Disable-TestSigning }
     default { Write-Host "Exiting." }
 }
-
-
-$MenuOptions = @(
-    [PSCustomObject]@{  Id      = '1';  Name = ''; Enabled = $true
-                        Key     = ''
-                        Help    = ''
-                        Type    = ''
-                        Action  = {  } }
-    [PSCustomObject]@{  Id      = '';  Name = ''; Enabled = $true
-                        Key     = ''
-                        Help    = ''
-                        Type    = ''
-                        Action  = {  } }
-    [PSCustomObject]@{  Id      = '';  Name = ''; Enabled = $true
-                        Key     = ''
-                        Help    = ''
-                        Type    = ''
-                        Action  = {  } }
-    [PSCustomObject]@{  Id      = '';  Name = ''; Enabled = $true
-                        Key     = ''
-                        Help    = ''
-                        Type    = ''
-                        Action  = {  } }
-    [PSCustomObject]@{ Id     = 'Q'; Name = 'Quit Menu';                        Enabled = $true
-                      Key     = 'Q'
-                      Help    = 'Exit menu'
-                      Type    = 'Meta'
-                      Action  = { return 'quit' } }
-)
